@@ -3,11 +3,11 @@
 let UserSession = require('./UserSession');
 let TripDAO = require('./TripDAO');
 
-class TripService {
+class TripServiceOriginal {
 
     getTripsByUser(user) {
         let tripList = [];
-        let loggedUser = this.getLoggedUser();
+        let loggedUser = UserSession.getLoggedUser();
         let isFriend = false;
 
         if (loggedUser != null) {
@@ -23,7 +23,7 @@ class TripService {
             };
 
             if (isFriend) {
-                tripList = this.findTripsByUser(user);
+                tripList = TripDAO.findTripsByUser(user);
             }
 
             return tripList;
@@ -34,16 +34,6 @@ class TripService {
 
     }
 
-
-    getLoggedUser(){
-        return UserSession.getLoggedUser();
-    }
-
-
-    findTripsByUser(user){
-        return TripDAO.findTripsByUser(user);
-    }
-
 }
 
-module.exports = TripService
+module.exports = TripServiceOriginal
