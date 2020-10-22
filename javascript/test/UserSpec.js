@@ -5,12 +5,18 @@ let User = require('../src/User');
 
 describe('User', () => {
 
-    it('should throw error when user is not logged', () => {
-        let tripService = new TripService();
+    it('should return false if not friends with other user', () => {
+        let user = new User();
+        let otherUser = new User();
 
-        tripService.getLoggedUser = () => {return null};
+        assert.strictEqual(user.isFriendsWith(otherUser), false);
+    });
 
-        assert.throws(() => tripService.getTripsByUser(),  /^Error: User not logged in.$/);
+    it('should return true if friends with other user', () => {
+        let otherUser = new User();
+        let user = new User([otherUser]);
+
+        assert.strictEqual(user.isFriendsWith(otherUser), true);
     });
 
 });

@@ -19,7 +19,6 @@ describe('TripService', () => {
         let tripService = new TripService;
 
         let user = new User;
-        user.getFriends = () => {return []}
 
         tripService.getLoggedUser = () => {return user};
 
@@ -31,7 +30,6 @@ describe('TripService', () => {
         let tripService = new TripService;
 
         let user = new User;
-        user.getFriends = () => {return [new User,new User,new User]}
 
         let loggedUser = new User;
         tripService.getLoggedUser = () => {return loggedUser};
@@ -42,10 +40,9 @@ describe('TripService', () => {
     it('should return user\'s trip list when the user is a friend with the logged user', () => {
         let tripService = new TripService;
 
-        let user = new User;
         let loggedUser = new User;
-
-        user.getFriends = () => {return [new User,new User,new User,loggedUser]}
+        let user = new User([new User,new User,new User,loggedUser]);
+        
         tripService.getLoggedUser = () => {return loggedUser};
 
         let userTripList = [{to: 'MADRID'}, {to: 'BUENOS_AIRES'}, {to: 'LONDON'}];
