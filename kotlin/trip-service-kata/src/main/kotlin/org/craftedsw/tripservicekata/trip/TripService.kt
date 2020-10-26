@@ -23,7 +23,7 @@ open class TripService {
             }
 
             if (isFriend) {
-                tripList = TripDAO.findTripsByUser(user)
+                tripList = findTripsFor(user)
             }
 
             return tripList
@@ -32,6 +32,8 @@ open class TripService {
             throw UserNotLoggedInException()
         }
     }
+
+    open fun findTripsFor(user: User) = TripDAO.findTripsByUser(user)
 
     open fun getLoggedUser() = UserSession.instance.loggedUser
 

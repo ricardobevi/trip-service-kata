@@ -10,13 +10,16 @@ import java.util.*
 class TripServiceTest {
 
     val ANY_USER = User()
+    val LONDON = Trip()
 
     private lateinit var tripService: TripServiceTestable
 
     private var user: User = User()
-    private var loggedUser: User? = User()
+    private var loggedUser: User = User()
 
+    private var usersTripList: MutableList<Trip> = ArrayList<Trip>()
     private var tripList: List<Trip> = ArrayList<Trip>()
+
 
     @Test
     fun `should throw user not logged exception when user is not logged`(){
@@ -47,9 +50,19 @@ class TripServiceTest {
         thenTripListShouldBeEmpty()
     }
 
+    @Test
+    fun `should return user's trip list when user is friends with logged user`(){
+        givenLoggedUser()
+        givenUserIsFriendsWith(loggedUser)
+        givenUserHasATripTo(LONDON)
+
+        whenGetTripsByUserIsCalled()
+
+        thenTripListShouldHaveTripsTo(listOf(LONDON))
+    }
+
     private fun givenNotLoggedInUser(){
-        loggedUser = null
-        tripService = TripServiceTestable(loggedUser)
+        tripService = TripServiceTestable(null)
     }
 
     private fun givenLoggedUser(){
@@ -65,6 +78,11 @@ class TripServiceTest {
         user.addFriend(anyUser)
     }
 
+    private fun givenUserHasATripTo(trip: Trip) {
+        usersTripList.add(trip)
+        tripService = TripServiceTestable(loggedUser, usersTripList)
+    }
+
     private fun whenGetTripsByUserIsCalled() {
         tripList = tripService.getTripsByUser(user)
     }
@@ -73,8 +91,16 @@ class TripServiceTest {
         assertEquals(Collections.emptyList<Trip>(), tripList)
     }
 
-    class TripServiceTestable(private var loggedUser: User?) : TripService(){
+    private fun thenTripListShouldHaveTripsTo(trips: List<Trip>) {
+        assertEquals(trips, tripList)
+    }
+
+    class TripServiceTestable(
+            private var loggedUser: User? = User(),
+            private val trips: List<Trip> = ArrayList()) : TripService(){
+
         override fun getLoggedUser() = loggedUser
+        override fun findTripsFor(user: User) = trips
     }
 
 }
