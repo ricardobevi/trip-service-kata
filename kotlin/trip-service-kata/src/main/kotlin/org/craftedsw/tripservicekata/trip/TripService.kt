@@ -5,26 +5,20 @@ import org.craftedsw.tripservicekata.user.User
 import org.craftedsw.tripservicekata.user.UserSession
 import java.util.*
 
-class TripService {
+open class TripService {
 
     fun getTripsByUser(user: User): List<Trip> {
-        var tripList: List<Trip> = ArrayList<Trip>()
-        val loggedUser: User? = UserSession.instance.loggedUser
-        var isFriend: Boolean = false
-        if (loggedUser != null) {
-            for (friend in user.friends) {
-                if (friend == loggedUser) {
-                    isFriend = true
-                    break
-                }
-            }
-            if (isFriend) {
-                tripList = TripDAO.findTripsByUser(user)
-            }
-            return tripList
-        } else {
-            throw UserNotLoggedInException()
+
+        val loggedUser: User = getLoggedUser() ?: throw UserNotLoggedInException()
+
+        if (user.isFriendsWith(loggedUser)) {
+            return findTripsFor(user)
         }
+
+        return ArrayList<Trip>()
     }
+
+    open fun findTripsFor(user: User) = TripDAO.findTripsByUser(user)
+    open fun getLoggedUser() = UserSession.instance.loggedUser
 
 }
