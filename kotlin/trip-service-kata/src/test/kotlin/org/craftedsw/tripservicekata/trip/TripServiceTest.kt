@@ -17,13 +17,12 @@ class TripServiceTest {
     private var user: User = User()
     private var loggedUser: User = User()
 
-    private var usersTripList: MutableList<Trip> = ArrayList<Trip>()
-    private var tripList: List<Trip> = ArrayList<Trip>()
-
+    private var usersTripList: MutableList<Trip> = mutableListOf()
+    private var tripList: List<Trip> = emptyList()
 
     @Test
-    fun `should throw user not logged exception when user is not logged`(){
-        givenNotLoggedInUser()
+    fun `should throw user not logged exception when user is a guest`(){
+        givenGuestUser()
 
         assertThrows<UserNotLoggedInException> {
             whenGetTripsByUserIsCalled()
@@ -61,7 +60,7 @@ class TripServiceTest {
         thenTripListShouldHaveTripsTo(listOf(LONDON))
     }
 
-    private fun givenNotLoggedInUser(){
+    private fun givenGuestUser(){
         tripService = TripServiceTestable(null)
     }
 
